@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -22,30 +17,52 @@ enum AuditAction {
 
   @@map("audit_action")
 }
+
+enum UserStatus {
+  PENDIENTE
+  ACTIVO
+  INACTIVO
+
+  @@map("user_statuses")
+}
+
+enum ScesiRank {
+  POSTULANTE
+  JUNIOR
+  INTERMEDIO
+  AVANZADO
+  HONORARIO
+
+  @@map("scesi_ranks")
+}
+
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  passwordHash String   @map("password_hash")
-  firstName    String   @map("first_name")
-  lastName     String   @map("last_name")
-  isActive     Boolean  @default(true) @map("is_active")
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  id            String         @id @default(uuid())
+  email         String         @unique
+  passwordHash  String         @map("password_hash")
+  firstName     String         @map("first_name")
+  lastName      String         @map("last_name")
+  academicRanck ScesiRank      @default(POSTULANTE)
+  status        UserStatus     @default(PENDIENTE)
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime       @updatedAt @map("updated_at") @db.Timestamptz
   refreshTokens RefreshToken[]
   auditLogs     AuditLog[]
+  userRoles     UserRole[]
+  xpHistory     XpHistory[]
 
   @@map("users")
 }
 
 model RefreshToken {
-  id        String   @id @default(uuid())
-  token     String   @unique
-  userId    String   @map("user_id")
-  userAgent String?  @map("user_agent")
-  ipAddress String?  @map("ip_address")
-  isRevoked Boolean  @default(false) @map("is_revoked")
-  expiresAt DateTime @map("expires_at") @db.Timestamptz
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  id         String   @id @default(uuid())
+  tokenHash  String   @unique
+  userId     String   @map("user_id")
+  userAgent  String?  @map("user_agent")
+  deviceInfo String?  @map("device_info")
+  isRevoked  Boolean  @default(false) @map("is_revoked")
+  expiresAt  DateTime @map("expires_at") @db.Timestamptz
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -54,6 +71,7 @@ model RefreshToken {
 
 model AuditLog {
   id        String      @id @default(uuid())
+  tokenId   String?     @map("token_id")
   userId    String?     @map("user_id")
   action    AuditAction
   ipAddress String?     @map("ip_address")
@@ -61,5 +79,79 @@ model AuditLog {
   createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz
 
   user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
   @@map("audit_logs")
+}
+
+model AuthRole {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  rolePermissions RolePermission[]
+  userRoles       UserRole[]
+
+  @@map("auth_roles")
+}
+
+model RolePermission {
+  idRolePermission String     @id @default(uuid())
+  roleId           String     @map("role_id")
+  permissionId     String     @map("permission_id")
+  role             AuthRole   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission       Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+}
+
+model Permission {
+  id             String           @id @default(uuid())
+  roleId         String           @map("role_id")
+  resource       String
+  action         String
+  rolePermission RolePermission[]
+
+  @@unique([roleId, resource, action])
+  @@map("permissions")
+}
+
+model UserRole {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  roleId     String   @map("role_id")
+  assignedAt DateTime @default(now()) @map("assigned_at") @db.Timestamptz
+
+  user User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role AuthRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@map("user_roles")
+}
+
+model XpRule {
+  id          String      @id @default(uuid())
+  category    String
+  activity    String
+  subActivity String
+  basePoints  Int         @default(0)
+  observation String?
+  isActive    Boolean     @default(true) @map("is_active")
+  history     XpHistory[]
+
+  @@map("xp_rules")
+}
+
+model XpHistory {
+  id                String   @id @default(uuid())
+  userId            String   @map("user_id")
+  ruleId            String   @map("rule_id")
+  amount            Int
+  multiplierApplied Float?
+  reason            String
+  allocatedBy       String?  @map("allocated_by")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rule XpRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+
+  @@map("xp_history")
 }
