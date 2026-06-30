@@ -1,4 +1,4 @@
-# 📑 Microservice Specification: Identity & Access (ms_auth)
+# Microservice Specification: Identity & Access (ms_auth)
 
 This microservice acts as the central authority for security, authentication, and the core gamification mechanics of the SCESI platform ecosystem. It is the sole owner of user identity records, dynamic permissions, and academic progression data.
 
@@ -62,7 +62,7 @@ This microservice acts as the central authority for security, authentication, an
 
 As established in the global architecture canvas, `ms_auth` acts as the central accounting transactional ledger for actions across external domains.
 
-### 📥 Subscribed Events (Events this service listens to)
+### Subscribed Events (Events this service listens to)
 
 * **`admissions.applicant.approved`**
   * *Payload:* `{ email: string, firstName: string, lastName: string }`
@@ -74,7 +74,7 @@ As established in the global architecture canvas, `ms_auth` acts as the central 
   * *Payload:* `{ userId: string, eventId: string, category: string }`
   * *Reaction:* Injects corresponding ecosystem points depending on whether it was a large physical conference, medium seminar, or virtual technical workshop.
 
-### 📤 Published Events (Events this service emits)
+### Published Events (Events this service emits)
 
 * **`auth.user.rank_upgraded`**
   * *Payload:* `{ userId: string, oldRank: ScesiRank, newRank: ScesiRank }`
@@ -97,7 +97,7 @@ To prevent external student registration from cluttering active member workflows
 * **Rank Isolation:** They are initialized with `academic_rank = POSTULANTE` (or a new rank `EXTERNO` if absolute separation is desired).
 * **System Role Assignment:** They **never** receive the technical role `ROLE_MEMBER`. Instead, they are automatically linked via `user_roles` to a specific system role: **`ROLE_STUDENT`**.
 
-#### 🔐 Token Permissions Payload Example
+#### Token Permissions Payload Example
 
 When an external student logs into the Mobile app or Web portal, `ms_auth` issues a lightweight JWT containing only their specific access rights:
 

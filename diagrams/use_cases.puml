@@ -1,0 +1,50 @@
+@startuml
+title Diagrama de Casos de Uso (UML) - Identity & Access Service
+
+left to right direction
+
+' Definición de Actores
+actor "Aspirante / Postulante" as post
+actor "Miembro Activo" as member
+actor "Mesa Directiva" as admin
+actor "Sistema (Otros Microservicios)" as system
+
+rectangle "Identity & Access Service" {
+    
+    package "Módulo de Autenticación" {
+        usecase "Registrarse (Postulación)" as UC_Register
+        usecase "Iniciar Sesión (Login)" as UC_Login
+        usecase "Validar Permisos (RBAC)" as UC_RBAC
+    }
+    
+    package "Módulo de Membresías" {
+        usecase "Visualizar Perfil Académico" as UC_Profile
+        usecase "Gestionar Miembros (Aprobar/Bloquear)" as UC_Manage
+    }
+    
+    package "Módulo de Gamificación (XP)" {
+        usecase "Consultar Historial de XP" as UC_ViewXP
+        usecase "Procesar Evento de Actividad" as UC_ProcessEvent
+        usecase "Calcular y Actualizar Rango" as UC_UpdateRank
+    }
+}
+
+' Relaciones de Aspirante
+post --> UC_Register
+
+' Relaciones de Miembro Activo
+member --> UC_Login
+member --> UC_Profile
+member --> UC_ViewXP
+
+' Relaciones de Mesa Directiva
+admin --> UC_Manage
+admin --|> member : (Hereda acciones de miembro)
+
+' Relaciones del Sistema / Microservicios (vía Broker o API)
+system --> UC_RBAC
+system --> UC_ProcessEvent
+
+' Inclusiones internas del sistema
+UC_ProcessEvent ..> UC_UpdateRank : <<include>>
+@enduml

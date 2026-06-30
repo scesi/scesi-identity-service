@@ -1,0 +1,82 @@
+@startuml
+title Arquitectura Microservicios SCESI - Integración Total
+
+skinparam componentStyle uml2
+skinparam databaseBackgroundColor #E1D5E7
+skinparam ArrowColor #2D3436
+
+package "Capa de Presentación" {
+    [Web Admin / Blog] as web
+    [App Cappuccino (Android and maybe ios)] as app
+}
+
+node "API Gateway (NestJS)" as gateway #F8CECC
+
+package "Microservicios" {
+    
+    component "Identity & Access" as ms_auth #FFF2CC
+    database "Auth DB\n(PostgreSQL)" as db_auth
+    
+    component "Environment & IoT" as ms_iot #FFF2CC
+    database "IoT DB\n(Redis/MQTT)" as db_iot
+    
+    component "Community, Events & Academy" as ms_education_events #FFF2CC
+    database "Events DB\n(PostgreSQL)" as db_events
+    
+    component "Resource & Logistics" as ms_res #FFF2CC
+    database "Resource DB\n(PostgreSQL)" as db_res
+    
+    component "Treasury & Blog" as ms_treasury #FFF2CC
+    database "Treasury DB\n(PostgreSQL)" as db_treasury
+
+    ' --- NUEVOS MÓDULOS ---
+    
+    component "Schedule Service (Cappuccino)" as ms_cap #D5E8D4
+    database "Schedule DB\n(PostgreSQL/Redis)" as db_cap
+
+    component "Research & Projects" as ms_research #D5E8D4
+    database "Research DB\n(PostgreSQL/S3)" as db_research
+}
+
+queue "Message Broker\n(RabbitMQ / Redis)" as broker #D5E8D4
+
+cloud "Fuentes Externas" {
+    [API Universidad] as api_uni
+    [Manual JSON Parser] as parser
+}
+
+' Relaciones de Clientes a Gateway
+web --> gateway
+app --> gateway
+
+' Relaciones de Gateway a Microservicios
+gateway ..> ms_auth : REST
+gateway ..> ms_iot : REST/MQTT
+gateway ..> ms_education_events : REST
+gateway ..> ms_res : REST
+gateway ..> ms_treasury : REST
+gateway ..> ms_cap : REST
+gateway ..> ms_research : REST
+
+' Cada microservicio con su propia base de datos
+ms_auth -- db_auth
+ms_iot -- db_iot
+ms_education_events -- db_events
+ms_res -- db_res
+ms_treasury -- db_treasury
+ms_cap -- db_cap
+ms_research -- db_research
+
+' Integración Cappuccino
+ms_cap --> api_uni : Fetch
+parser ..> ms_cap : Upload JSON
+
+' Comunicación asíncrona vía Broker
+ms_auth <--> broker : Events
+ms_iot <--> broker : Events
+ms_education_events <--> broker : Events
+ms_res <--> broker : Events
+ms_treasury <--> broker : Events
+ms_research <--> broker : Events
+ms_cap <--> broker : Events
+@enduml

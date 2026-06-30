@@ -1,0 +1,49 @@
+@startuml
+!theme cyborg-outline
+title Arquitectura SCESI - Prioridad de Integración
+
+skinparam componentStyle uml2
+skinparam databaseBackgroundColor #E1D5E7
+
+package "Capa de Entrada" {
+    [App / Web] as ui
+}
+
+node "API Gateway" as gateway #F8CECC
+
+package "Fase 1: Infraestructura Crítica" {
+    component "Identity & Access" as ms_auth #FFF2CC
+    component "Environment & IoT (Chapa)" as ms_iot #FFF2CC
+}
+
+package "Fase 2: Operatividad de Campo" {
+    component "Resource & Logistics" as ms_res #FFF2CC
+    component "Community & Events (FLISOL)" as ms_events #FFF2CC
+}
+
+package "Fase 3: Investigación y Admin" {
+    component "Research & Projects" as ms_research #D5E8D4
+    component "Treasury & Blog" as ms_treasury #FFF2CC
+}
+
+package "Fase 4: Integración de Legacy" {
+    component "Schedule Service (Cappuccino)" as ms_cap #D5E8D4
+}
+
+queue "Message Broker" as broker #D5E8D4
+
+' Relaciones
+ui --> gateway
+gateway ..> ms_auth
+gateway ..> ms_iot
+gateway ..> ms_res
+gateway ..> ms_events
+gateway ..> ms_research
+gateway ..> ms_treasury
+gateway ..> ms_cap
+
+' Layout para forzar el orden visual
+ms_auth -[hidden]down-> ms_res
+ms_res -[hidden]down-> ms_research
+ms_research -[hidden]down-> ms_cap
+@enduml
