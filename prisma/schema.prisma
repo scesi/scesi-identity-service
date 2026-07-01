@@ -64,7 +64,8 @@ model RefreshToken {
   expiresAt  DateTime @map("expires_at") @db.Timestamptz
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  auditLogs AuditLog[]
 
   @@map("refresh_tokens")
 }
@@ -78,7 +79,8 @@ model AuditLog {
   userAgent String?     @map("user_agent")
   createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz
 
-  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  refreshToken RefreshToken? @relation(fields: [tokenId], references: [id], onDelete: SetNull)
 
   @@map("audit_logs")
 }
@@ -101,16 +103,18 @@ model RolePermission {
   permissionId     String     @map("permission_id")
   role             AuthRole   @relation(fields: [roleId], references: [id], onDelete: Cascade)
   permission       Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@map("role_permissions")
 }
 
 model Permission {
   id             String           @id @default(uuid())
-  roleId         String           @map("role_id")
   resource       String
   action         String
   rolePermission RolePermission[]
 
-  @@unique([roleId, resource, action])
+  @@unique([resource, action])
   @@map("permissions")
 }
 
@@ -131,8 +135,8 @@ model XpRule {
   id          String      @id @default(uuid())
   category    String
   activity    String
-  subActivity String
-  basePoints  Int         @default(0)
+  subActivity String      @map("sub_activity")
+  basePoints  Int         @default(0) @map("base_points")
   observation String?
   isActive    Boolean     @default(true) @map("is_active")
   history     XpHistory[]
@@ -145,7 +149,7 @@ model XpHistory {
   userId            String   @map("user_id")
   ruleId            String   @map("rule_id")
   amount            Int
-  multiplierApplied Float?
+  multiplierApplied Float?   @map("multiplier_applied")
   reason            String
   allocatedBy       String?  @map("allocated_by")
   createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz
