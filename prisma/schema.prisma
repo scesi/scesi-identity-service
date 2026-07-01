@@ -42,8 +42,8 @@ model User {
   passwordHash  String         @map("password_hash")
   firstName     String         @map("first_name")
   lastName      String         @map("last_name")
-  academicRanck ScesiRank      @default(POSTULANTE)
-  status        UserStatus     @default(PENDIENTE)
+  academicRanck ScesiRank      @default(POSTULANTE) @map("academic_ranck")
+  status        UserStatus     @default(PENDIENTE) @map("status")
   createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz
   updatedAt     DateTime       @updatedAt @map("updated_at") @db.Timestamptz
   refreshTokens RefreshToken[]
@@ -56,7 +56,7 @@ model User {
 
 model RefreshToken {
   id         String   @id @default(uuid())
-  tokenHash  String   @unique
+  tokenHash  String   @unique @map("token_hash")
   userId     String   @map("user_id")
   userAgent  String?  @map("user_agent")
   deviceInfo String?  @map("device_info")
@@ -98,7 +98,7 @@ model AuthRole {
 }
 
 model RolePermission {
-  idRolePermission String     @id @default(uuid())
+  idRolePermission String     @id @default(uuid()) @map("id_role_permission")
   roleId           String     @map("role_id")
   permissionId     String     @map("permission_id")
   role             AuthRole   @relation(fields: [roleId], references: [id], onDelete: Cascade)
