@@ -35,7 +35,8 @@ $ pnpm install
 $ cp .env.example .env
 ```
 
-> **Note:** Update the `.env` file with your specific configuration values if needed.
+> [!IMPORTANT] 
+> Update the `.env` file with your specific configuration values if needed.
 
 ## Compile and run the project
 
