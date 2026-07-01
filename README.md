@@ -28,8 +28,14 @@
 ## Project setup
 
 ```bash
+# Install dependencies
 $ pnpm install
+
+# Copy environment variables
+$ cp .env.example .env
 ```
+
+> **Note:** Update the `.env` file with your specific configuration values if needed.
 
 ## Compile and run the project
 
