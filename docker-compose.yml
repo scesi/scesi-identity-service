@@ -11,8 +11,20 @@ services:
     volumes:
       - ./.database-pg:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-identity}"]
+      test:
+        ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-identity}"]
       interval: 5s
       timeout: 5s
       retries: 5
-      
+
+  adminer:
+    image: adminer
+    container_name: scesi-identity-adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
