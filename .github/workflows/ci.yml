@@ -1,0 +1,36 @@
+name: CI - ms-identity
+
+on:
+  push:
+    branches: ['main', 'develop']
+  pull_request:
+    branches: ['main', 'develop']
+
+jobs:
+  integracion-continua:
+    name: Revisión y Construcción
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Revisión de formato (Prettier)
+        run: npx prettier --check "src/**/*.ts" "test/**/*.ts"
+      - name: Revisión de código (ESLint)
+        run: npx eslint "src/**/*.ts" "test/**/*.ts"
+
+      - name: Pruebas automatizadas
+        run: npm run test
+
+      - name: Construir proyecto (Build)
+        run: npm run build
