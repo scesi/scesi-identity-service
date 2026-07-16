@@ -11,6 +11,7 @@ import { AuditLogsModule } from './modules/audit-logs/audit-logs.module';
 import { XpModule } from './modules/xp/xp.module';
 import { AuthRolesModule } from './modules/auth-roles/auth-roles.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { PermissionsModule } from './modules/permissions/permissions.module';
       username: process.env.POSTGRES_USER || 'postgres',
       password: process.env.POSTGRES_PASSWORD || 'postgres',
       database: process.env.POSTGRES_DB || 'identity',
-      entities: [join(__dirname, '**', '**/*.entity.{.ts,.js}')],
+      entities: [join(__dirname, '**', '*.entity.{ts,js}')],
       synchronize: process.env.NODE_ENV === 'development',
       logging: process.env.NODE_ENV === 'development',
     }),
@@ -36,6 +37,7 @@ import { PermissionsModule } from './modules/permissions/permissions.module';
     XpModule,
     AuthRolesModule,
     PermissionsModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
