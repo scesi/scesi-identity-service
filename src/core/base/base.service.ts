@@ -1,4 +1,10 @@
-import { Repository, FindOptionsWhere, DeepPartial } from 'typeorm';
+import {
+  Repository,
+  FindOptionsWhere,
+  FindOptionsOrder,
+  DeepPartial,
+} from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { NotFoundException } from '@nestjs/common';
 import { ICrudBase, PaginationParams, PaginatedResult } from '../interfaces';
 
@@ -22,7 +28,7 @@ export abstract class BaseService<
       skip: (page - 1) * limit,
       take: limit,
       order: query?.sortBy
-        ? ({ [query.sortBy]: query.order ?? 'ASC' } as Record<string, string>)
+        ? ({ [query.sortBy]: query.order ?? 'ASC' } as FindOptionsOrder<T>)
         : undefined,
     });
 
@@ -40,8 +46,8 @@ export abstract class BaseService<
   }
 
   async update(id: string | number, dto: UpdateDTO): Promise<T> {
-    await this.findOne(id); // valida que exista, lanza 404 si no
-    await this.repository.update(id, dto as DeepPartial<T>);
+    await this.findOne(id);
+    await this.repository.update(id, dto as QueryDeepPartialEntity<T>);
     return this.findOne(id);
   }
 
