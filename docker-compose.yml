@@ -1,4 +1,19 @@
 services:
+  entity-ms:
+    build: .
+    container_name: scesi-entity-ms
+    ports:
+      - '8000:8000'
+    env_file:
+      - .env
+    environment:
+      - PORT=8000
+      - POSTGRES_HOST=postgres
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/identity?schema=public
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   postgres:
     image: postgres:18-alpine
     container_name: identity-db
@@ -7,13 +22,16 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: ${POSTGRES_DB:-identity}
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - '${POSTGRES_PORT:-5432}:5432'
     volumes:
       - ./docker/init:/docker-entrypoint-initdb.d
       - postgres_data:/var/lib/postgresql
     healthcheck:
       test:
-        ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-identity}"]
+        [
+          'CMD-SHELL',
+          'pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-identity}',
+        ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -22,7 +40,7 @@ services:
     image: adminer
     container_name: scesi-identity-adminer
     ports:
-      - "8080:8080"
+      - '8080:8080'
     depends_on:
       postgres:
         condition: service_healthy
