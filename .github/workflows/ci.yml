@@ -15,19 +15,25 @@ jobs:
       - name: Checkout del código
         uses: actions/checkout@v4
 
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 11
+
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: '24'
+          cache: 'pnpm'
 
       - name: Instalar dependencias
-        run: npm ci
+        run: pnpm ci
 
       - name: Revisión de formato (Prettier)
-        run: npx prettier --check "src/**/*.ts" "test/**/*.ts"
+        run: pnpm exec prettier --check "src/**/*.ts" "test/**/*.ts"
+
       - name: Revisión de código (ESLint)
-        run: npx eslint "src/**/*.ts" "test/**/*.ts"
+        run: pnpm exec eslint "src/**/*.ts" "test/**/*.ts"
 
       - name: Pruebas automatizadas
         run: npm run test
