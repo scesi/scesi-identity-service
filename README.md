@@ -25,6 +25,30 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## API Endpoints - Autenticación
+
+### Registro de Usuario
+- **Endpoint:** `POST /users`
+- **Body:** `CreateUserDto`
+- **Requisitos de contraseña:**
+  - Mínimo 8 caracteres
+  - Al menos una mayúscula
+  - Al menos una minúscula
+  - Al menos un número
+  - Al menos un carácter especial
+- **Respuesta:** Usuario creado (sin contraseña)
+- **Código HTTP:** 201 Created
+
+### Login
+- **Endpoint:** `POST /users/login`
+- **Body:** `{ email: string, password: string }`
+- **Respuesta:** Usuario autenticado (sin contraseña)
+- **Código HTTP:** 200 OK
+
+### Validación de Errores
+- Los errores de validación retornan un objeto con mensajes descriptivos
+- Errores de autenticación retornan mensaje genérico "Credenciales inválidas" por seguridad
+
 ## Project setup
 
 ```bash
