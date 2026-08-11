@@ -7,9 +7,10 @@ import {
 } from 'typeorm';
 import { UserStatus } from '../value-objects/user-status.value-object';
 import { ScesiRank } from '../value-objects/scesi-rank.value-object';
+import { BaseAuditEntity } from '../../../core/base/entities/base-audit.entity';
 
 @Entity('users')
-export class User {
+export class User extends BaseAuditEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

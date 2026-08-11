@@ -4,9 +4,10 @@ import {
   Column,
   CreateDateColumn,
 } from 'typeorm';
+import { BaseAuditEntity } from '../../../core/base/entities/base-audit.entity';
 
 @Entity('auth_roles')
-export class AuthRole {
+export class AuthRole extends BaseAuditEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
