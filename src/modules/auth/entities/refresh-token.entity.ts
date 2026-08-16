@@ -7,9 +7,10 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import { BaseAuditEntity } from '../../../core/base/entities/base-audit.entity';
 
 @Entity('refresh_tokens')
-export class RefreshToken {
+export class RefreshToken extends BaseAuditEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
