@@ -65,6 +65,18 @@ export class UsersService {
   }
 
   /**
+   * Find a user with its roles and the associated permissions.
+   * @param id - User ID
+   * @returns User with the `roles` relation populated or null
+   */
+  async findByIdWithRoles(id: string): Promise<User | null> {
+    return this.usersRepository.findOne({
+      where: { id },
+      relations: { roles: { role: { permissions: { permission: true } } } },
+    });
+  }
+
+  /**
    * Verify a password against a stored hash
    * @param password - Plaintext password
    * @param passwordHash - Stored hash

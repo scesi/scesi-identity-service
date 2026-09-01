@@ -3,8 +3,10 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { BaseAuditEntity } from '../../../core/base/entities/base-audit.entity';
+import { RolePermission } from '../../permissions/entities/role-permission.entity';
 
 @Entity('auth_roles')
 export class AuthRole extends BaseAuditEntity {
@@ -19,4 +21,9 @@ export class AuthRole extends BaseAuditEntity {
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
+
+  @OneToMany(() => RolePermission, (rolePermission) => rolePermission.role, {
+    onDelete: 'CASCADE',
+  })
+  permissions: RolePermission[];
 }
