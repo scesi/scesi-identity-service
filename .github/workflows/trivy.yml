@@ -2,9 +2,9 @@ name: 'Trivy Security Scan'
 
 on:
   push:
-    branches: ['main', 'master']
+    branches: ['main', 'develop', 'dev', 'release/*']
   pull_request:
-    branches: ['main', 'master']
+    branches: ['main', 'develop', 'dev', 'release/*']
 
 permissions:
   contents: read
@@ -16,11 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
       - name: Run Trivy vulnerability scanner
         id: trivy-step
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@d2a0b60797ff03db6132bd4e2b293f9b37081297
         with:
           scan-type: 'fs'
           scan-ref: '.'
@@ -31,7 +31,7 @@ jobs:
         continue-on-error: true
 
       - name: Report Trivy Results to PR
-        uses: periphery-security/action-privy@v1
+        uses: periphery-security/action-privy@0d796ad35ba254f839fd4781d277c06018c52410
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           trivy-results: 'trivy-results.json'
