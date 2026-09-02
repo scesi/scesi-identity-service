@@ -1,0 +1,18 @@
+language: 'en-US'
+
+reviews:
+  profile: 'chill'
+  request_changes_workflow: false
+  high_level_summary: true
+  auto_review:
+    enabled: true
+    base_branches:
+      - 'main'
+      - 'develop'
+      - 'dev'
+      - 'release/.*'
+
+  path_filters:
+    - '!**/node_modules/**'
+    - '!dist/**'
+    - '!package-lock.json'
