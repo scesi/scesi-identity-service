@@ -25,7 +25,7 @@ importers:
         version: 11.1.26(@nestjs/common@11.1.26(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@11.1.26)(supports-color@8.1.1)
       '@nestjs/typeorm':
         specifier: ^11.0.3
-        version: 11.0.3(@nestjs/common@11.1.26(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@11.1.26)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@1.0.0(mysql2@3.15.3)(pg@8.22.0)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@24.13.1)(typescript@5.9.3)))
+        version: 11.0.3(@nestjs/common@11.1.26(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@11.1.26)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@1.0.0(mysql2@3.15.3)(pg@8.23.0)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@24.13.1)(typescript@5.9.3)))
       argon2:
         specifier: ^0.45.1
         version: 0.45.1
@@ -36,8 +36,8 @@ importers:
         specifier: ^0.15.1
         version: 0.15.1
       pg:
-        specifier: ^8.22.0
-        version: 8.22.0
+        specifier: ^8.23.0
+        version: 8.23.0
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -46,7 +46,7 @@ importers:
         version: 7.8.2
       typeorm:
         specifier: ^1.0.0
-        version: 1.0.0(mysql2@3.15.3)(pg@8.22.0)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@24.13.1)(typescript@5.9.3))
+        version: 1.0.0(mysql2@3.15.3)(pg@8.23.0)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@24.13.1)(typescript@5.9.3))
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.2.0
@@ -1774,6 +1774,7 @@ packages:
   eslint@9.39.5:
     resolution: {integrity: sha512-DgZS62aPLXKlnxILS/AYCoRvHaZeXceIzlXPkkGGzJWSow1aEk0lbTlxUSlyjC8jcaKxAdOnTDz+o1JFSBsyjw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -2698,15 +2699,15 @@ packages:
     peerDependencies:
       pg: '>=8.0'
 
-  pg-protocol@1.15.0:
-    resolution: {integrity: sha512-cq9sECI5s0+uPUXjbz8ioyPJni6RzsRib0US67i5IoTZKw8fNeYlVE7u8F4dG7vEJJtc5wdD1K189lCCUwqWTQ==}
+  pg-protocol@1.16.0:
+    resolution: {integrity: sha512-sILXutLVjCLjcDuOmvhX5e2Z4cS5qG/6Bu3VkpFwdf/633ElGLpEh9bgmuI5I4sqKqkifQiGyiCcx1HdtrK7tg==}
 
   pg-types@2.2.0:
     resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
     engines: {node: '>=4'}
 
-  pg@8.22.0:
-    resolution: {integrity: sha512-8wih1vVIBMxoUM2oB4soJsD9tDnDpLv4OXBJ+EJzFsvycD+lfyIreC2gGHq78f8jbLLt+bvlPTFdFZfJkOuzAA==}
+  pg@8.23.0:
+    resolution: {integrity: sha512-Ip2EQCngowJLGOfCwkFhPXU7/ljlhn6Rxlmy4XYfL2Y+vyRM59+8uR2xqRWKdYmbXmxCFOAmKxBuSUCdF34qLg==}
     engines: {node: '>= 16.0.0'}
     peerDependencies:
       pg-native: '>=3.0.1'
@@ -4304,13 +4305,13 @@ snapshots:
     optionalDependencies:
       '@nestjs/platform-express': 11.1.26(@nestjs/common@11.1.26(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@11.1.26)(supports-color@8.1.1)
 
-  '@nestjs/typeorm@11.0.3(@nestjs/common@11.1.26(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@11.1.26)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@1.0.0(mysql2@3.15.3)(pg@8.22.0)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@24.13.1)(typescript@5.9.3)))':
+  '@nestjs/typeorm@11.0.3(@nestjs/common@11.1.26(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@11.1.26)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@1.0.0(mysql2@3.15.3)(pg@8.23.0)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@24.13.1)(typescript@5.9.3)))':
     dependencies:
       '@nestjs/common': 11.1.26(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1)
       '@nestjs/core': 11.1.26(@nestjs/common@11.1.26(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/platform-express@11.1.26)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       reflect-metadata: 0.2.2
       rxjs: 7.8.2
-      typeorm: 1.0.0(mysql2@3.15.3)(pg@8.22.0)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@24.13.1)(typescript@5.9.3))
+      typeorm: 1.0.0(mysql2@3.15.3)(pg@8.23.0)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@24.13.1)(typescript@5.9.3))
 
   '@noble/hashes@1.8.0': {}
 
@@ -6397,11 +6398,11 @@ snapshots:
 
   pg-int8@1.0.1: {}
 
-  pg-pool@3.14.0(pg@8.22.0):
+  pg-pool@3.14.0(pg@8.23.0):
     dependencies:
-      pg: 8.22.0
+      pg: 8.23.0
 
-  pg-protocol@1.15.0: {}
+  pg-protocol@1.16.0: {}
 
   pg-types@2.2.0:
     dependencies:
@@ -6411,11 +6412,11 @@ snapshots:
       postgres-date: 1.0.7
       postgres-interval: 1.2.0
 
-  pg@8.22.0:
+  pg@8.23.0:
     dependencies:
       pg-connection-string: 2.14.0
-      pg-pool: 3.14.0(pg@8.22.0)
-      pg-protocol: 1.15.0
+      pg-pool: 3.14.0(pg@8.23.0)
+      pg-protocol: 1.16.0
       pg-types: 2.2.0
       pgpass: 1.0.5
     optionalDependencies:
@@ -6904,7 +6905,7 @@ snapshots:
 
   typedarray@0.0.6: {}
 
-  typeorm@1.0.0(mysql2@3.15.3)(pg@8.22.0)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@24.13.1)(typescript@5.9.3)):
+  typeorm@1.0.0(mysql2@3.15.3)(pg@8.23.0)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@24.13.1)(typescript@5.9.3)):
     dependencies:
       '@sqltools/formatter': 1.2.5
       ansis: 4.2.0
@@ -6918,7 +6919,7 @@ snapshots:
       yargs: 18.0.0
     optionalDependencies:
       mysql2: 3.15.3
-      pg: 8.22.0
+      pg: 8.23.0
       ts-node: 10.9.2(@types/node@24.13.1)(typescript@5.9.3)
     transitivePeerDependencies:
       - babel-plugin-macros
