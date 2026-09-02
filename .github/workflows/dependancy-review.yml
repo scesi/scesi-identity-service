@@ -16,5 +16,5 @@ jobs:
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v4
         with:
-          severity-threshold: high
+          fail-on-severity: 'high'
           comment-summary-in-pr: 'on-failure'
