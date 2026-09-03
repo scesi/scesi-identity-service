@@ -8,7 +8,7 @@ const mockRepository = {
   create: jest.fn((data: Record<string, unknown>) => data),
   save: jest.fn().mockResolvedValue({}),
   findOne: jest.fn(),
-  update: jest.fn().mockResolvedValue({}),
+  update: jest.fn().mockResolvedValue({ affected: 1 }),
 };
 
 const mockConfigService = {
@@ -59,7 +59,7 @@ describe('RefreshTokenService', () => {
   });
 
   describe('rotate()', () => {
-    it('revokes the old token and issues a new one', async () => {
+    it('revokes the old token atomically and issues a new one', async () => {
       const token = 'valid-token';
       mockRepository.findOne.mockResolvedValue({
         tokenHash: hashToken(token),
@@ -74,9 +74,37 @@ describe('RefreshTokenService', () => {
 
       expect(result.userId).toBe('user-1');
       expect(result.refreshToken).toHaveLength(96);
-      expect(mockRepository.save).toHaveBeenCalledWith(
-        expect.objectContaining({ isRevoked: true }),
+      expect(mockRepository.update).toHaveBeenCalledWith(
+        { tokenHash: hashToken(token), isRevoked: false },
+        { isRevoked: true },
       );
+    });
+
+    it('allows exactly one winner when concurrent rotations race', async () => {
+      const token = 'raced-token';
+      mockRepository.findOne.mockResolvedValue({
+        tokenHash: hashToken(token),
+        userId: 'user-1',
+        isRevoked: false,
+        expiresAt: new Date(Date.now() + 1000),
+        userAgent: undefined,
+        deviceInfo: undefined,
+      });
+      // First conditional update flips the row; the second sees zero rows.
+      mockRepository.update
+        .mockResolvedValueOnce({ affected: 1 })
+        .mockResolvedValueOnce({ affected: 0 });
+
+      const [winner, loser] = await Promise.allSettled([
+        service.rotate(token),
+        service.rotate(token),
+      ]);
+
+      expect(winner.status).toBe('fulfilled');
+      if (winner.status === 'fulfilled') {
+        expect(winner.value.refreshToken).toHaveLength(96);
+      }
+      expect(loser.status).toBe('rejected');
     });
 
     it('rejects an unknown token', async () => {

@@ -67,8 +67,15 @@ export class RefreshTokenService {
       throw new UnauthorizedException('Refresh token has expired');
     }
 
-    existing.isRevoked = true;
-    await this.refreshTokenRepository.save(existing);
+    // Atomic conditional revocation: exactly one concurrent caller can flip
+    // isRevoked from false to true; a loser updates zero rows and is rejected.
+    const result = await this.refreshTokenRepository.update(
+      { tokenHash: hash, isRevoked: false },
+      { isRevoked: true },
+    );
+    if (result.affected === 0) {
+      throw new UnauthorizedException('Refresh token has been revoked');
+    }
 
     const newToken = await this.issue(
       existing.userId,

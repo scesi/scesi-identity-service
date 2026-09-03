@@ -61,7 +61,8 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string): Promise<AuthTokenPair> {
-    const { userId } = await this.refreshTokenService.rotate(refreshToken);
+    const { userId, refreshToken: nextRefreshToken } =
+      await this.refreshTokenService.rotate(refreshToken);
 
     const userWithRoles = await this.usersService.findByIdWithRoles(userId);
     if (!userWithRoles) {
@@ -70,9 +71,8 @@ export class AuthService {
 
     const payload = this.tokenPayloadService.build(userWithRoles);
     const access_token = this.jwtService.sign(payload);
-    const refresh_token = await this.refreshTokenService.issue(userId);
 
-    return { access_token, refresh_token };
+    return { access_token, refresh_token: nextRefreshToken };
   }
 
   async revokeCurrent(refreshToken: string): Promise<void> {

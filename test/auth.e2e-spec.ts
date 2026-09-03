@@ -174,7 +174,13 @@ describe('Auth endpoints (e2e)', () => {
   });
 
   it('POST /auth/logout-all revokes every token for the user (200)', async () => {
-    const { access_token, refresh_token } = tokens(
+    const first = tokens(
+      await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ email, password })
+        .expect(200),
+    );
+    const second = tokens(
       await request(app.getHttpServer())
         .post('/auth/login')
         .send({ email, password })
@@ -183,13 +189,18 @@ describe('Auth endpoints (e2e)', () => {
 
     await request(app.getHttpServer())
       .post('/auth/logout-all')
-      .set('Authorization', `Bearer ${access_token}`)
+      .set('Authorization', `Bearer ${first.access_token}`)
       .send({})
       .expect(200);
 
     await request(app.getHttpServer())
       .post('/auth/refresh')
-      .send({ refresh_token })
+      .send({ refresh_token: first.refresh_token })
+      .expect(401);
+
+    await request(app.getHttpServer())
+      .post('/auth/refresh')
+      .send({ refresh_token: second.refresh_token })
       .expect(401);
   });
 });

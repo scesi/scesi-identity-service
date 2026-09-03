@@ -25,8 +25,15 @@ import { PermissionsModule } from '../permissions/permissions.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const secret = configService.get<string>('JWT_SECRET');
-        if (!secret) {
-          throw new Error('JWT_SECRET is not configured');
+        if (!secret || !secret.trim()) {
+          throw new Error(
+            'JWT_SECRET is not configured; set a long random value (e.g. `openssl rand -hex 32`)',
+          );
+        }
+        if (/change[-_]?me/i.test(secret)) {
+          throw new Error(
+            'JWT_SECRET is still set to a placeholder value; generate a real secret before starting',
+          );
         }
         return {
           secret,
