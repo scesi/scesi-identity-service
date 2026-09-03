@@ -1,5 +1,16 @@
 allowBuilds:
+  '@parcel/watcher': true
   '@prisma/engines': true
   argon2: true
   prisma: true
   unrs-resolver: true
+overrides:
+  body-parser: ^2.3.0
+  mysql2: ^3.24.3
+  qs: ^6.16.0
+  'js-yaml@3': 3.15.2
+  'js-yaml@4': 4.3.2
+  'brace-expansion@2': 2.1.4
+  'brace-expansion@5': 5.0.9
+  'fast-uri@3': 3.1.7
+  browserslist: ^4.28.8
