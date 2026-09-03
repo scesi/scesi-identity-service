@@ -31,10 +31,81 @@ jobs:
         continue-on-error: true
 
       - name: Report Trivy Results to PR
-        uses: periphery-security/action-privy@0d796ad35ba254f839fd4781d277c06018c52410
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          trivy-results: 'trivy-results.json'
+          script: |
+            const fs = await import('node:fs');
+
+            let report = null;
+            try {
+              report = JSON.parse(fs.readFileSync('trivy-results.json', 'utf8'));
+            } catch {
+              // trivy-results.json missing or unreadable: scan step failed.
+            }
+
+            const marker = '<!-- trivy-scan -->';
+            let body;
+            if (!report) {
+              body =
+                marker + '\n## ⚠️ Trivy did not produce a report (scan step failed?)';
+            } else {
+              const findings = [];
+              for (const result of report.Results ?? []) {
+                for (const vuln of result.Vulnerabilities ?? []) {
+                  findings.push({ ...vuln, target: result.Target });
+                }
+              }
+
+              const lines = [];
+              if (findings.length === 0) {
+                lines.push(
+                  '## ✅ Trivy: no CRITICAL or HIGH vulnerabilities found',
+                );
+              } else {
+                lines.push(
+                  `## ❌ Trivy: ${findings.length} CRITICAL/HIGH vulnerability(ies) found`,
+                );
+                lines.push('');
+                lines.push(
+                  '| Severity | Package | CVE | Installed | Fixed in | Target |',
+                );
+                lines.push('| --- | --- | --- | --- | --- | --- |');
+                for (const f of findings) {
+                  lines.push(
+                    `| ${f.Severity} | \`${f.PkgName}\` | [${f.ID}](${f.URL ?? `https://avd.aquasec.com/${f.ID}`}) | ${f.InstalledVersion ?? '-'} | ${f.FixedVersion || 'no fix available'} | \`${f.target}\` |`,
+                  );
+                }
+              }
+              body = marker + '\n' + lines.join('\n');
+            }
+
+            const { data: comments } = await github.rest.issues.listComments({
+              ...context.repo,
+              per_page: 100,
+            });
+            const existing = comments.find((c) => c.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                ...context.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Upload Trivy report
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: trivy-results
+          path: trivy-results.json
+          if-no-files-found: ignore
 
       - name: Fail job if vulnerabilities were found
         if: steps.trivy-step.outcome == 'failure'
