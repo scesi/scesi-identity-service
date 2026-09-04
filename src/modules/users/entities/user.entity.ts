@@ -4,10 +4,12 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { UserStatus } from '../value-objects/user-status.value-object';
 import { ScesiRank } from '../value-objects/scesi-rank.value-object';
 import { BaseAuditEntity } from '../../../core/base/entities/base-audit.entity';
+import { UserRole } from '../../auth-roles/entities/user-role.entity';
 
 @Entity('users')
 export class User extends BaseAuditEntity {
@@ -40,6 +42,11 @@ export class User extends BaseAuditEntity {
     default: UserStatus.PENDIENTE,
   })
   status: UserStatus;
+
+  @OneToMany(() => UserRole, (userRole) => userRole.user, {
+    onDelete: 'CASCADE',
+  })
+  roles: UserRole[];
 
   @CreateDateColumn({
     name: 'created_at',

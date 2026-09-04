@@ -8,8 +8,7 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
-  issues: write
+  security-events: write
 
 jobs:
   trivy-scan:
@@ -24,17 +23,25 @@ jobs:
         with:
           scan-type: 'fs'
           scan-ref: '.'
-          format: 'json'
+          format: 'sarif'
           exit-code: '1'
-          output: 'trivy-results.json'
+          output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
         continue-on-error: true
 
-      - name: Report Trivy Results to PR
-        uses: periphery-security/action-privy@0d796ad35ba254f839fd4781d277c06018c52410
+      - name: Upload SARIF to GitHub code scanning
+        if: ${{ !cancelled() }}
+        uses: github/codeql-action/upload-sarif@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v4.37.9
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          trivy-results: 'trivy-results.json'
+          sarif_file: trivy-results.sarif
+
+      - name: Upload Trivy report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: trivy-results
+          path: trivy-results.sarif
+          if-no-files-found: ignore
 
       - name: Fail job if vulnerabilities were found
         if: steps.trivy-step.outcome == 'failure'

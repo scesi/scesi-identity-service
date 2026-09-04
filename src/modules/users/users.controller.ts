@@ -1,28 +1,24 @@
 import {
   Controller,
+  forwardRef,
+  Inject,
   Post,
   Body,
   HttpCode,
   HttpStatus,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
-
-export class LoginDto {
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
-
-  @IsNotEmpty()
-  @MinLength(1)
-  password: string;
-}
+import { AuthService } from '../auth/services/auth.service';
+import { LoginDto } from '../auth/dto/login.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    @Inject(forwardRef(() => AuthService))
+    private readonly authService: AuthService,
+  ) {}
 
   /**
    * Register a new user
@@ -35,29 +31,17 @@ export class UsersController {
   }
 
   /**
-   * User login endpoint
-   * @param loginDto - Email and password
+   * User login endpoint. Thin wrapper over the auth login flow.
+   * @param loginDto - Email, password and optional device info
    */
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginDto) {
-    const user = await this.usersService.findByEmail(loginDto.email);
-
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
-
-    const isValid = await this.usersService.verifyPassword(
+    return this.authService.login(
+      loginDto.email,
       loginDto.password,
-      user.passwordHash,
+      undefined,
+      loginDto.deviceInfo,
     );
-
-    if (!isValid) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
-
-    const userWithoutPassword = { ...user };
-    delete userWithoutPassword.passwordHash;
-    return userWithoutPassword;
   }
 }
