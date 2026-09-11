@@ -11,6 +11,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthService } from '../auth/services/auth.service';
 import { LoginDto } from '../auth/dto/login.dto';
+import { Public } from '../auth/decorators';
 
 @Controller('users')
 export class UsersController {
@@ -26,6 +27,7 @@ export class UsersController {
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @Public()
   async register(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
@@ -36,6 +38,7 @@ export class UsersController {
    */
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @Public()
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(
       loginDto.email,

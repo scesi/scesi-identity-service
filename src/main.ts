@@ -7,6 +7,9 @@ import { HttpAdapterHost } from '@nestjs/core';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Prefijo global de versión de la API (spec: /api/v1/*)
+  app.setGlobalPrefix('api/v1');
+
   // Configurar ValidationPipe globalmente para validación automática
   app.useGlobalPipes(
     new ValidationPipe({
