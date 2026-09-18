@@ -6,6 +6,9 @@ allowBuilds:
   prisma: true
   unrs-resolver: true
 overrides:
+  # Transitive dep of @nestjs/platform-express; 2.2.0 has HIGH DoS advisories
+  # (GHSA-wc9g-mqfw-jrwm, CVE-2026-77037), fixed in >=2.3.0.
+  multer: ^2.4.0
   body-parser: ^2.3.0
   mysql2: ^3.24.3
   qs: ^6.16.0
