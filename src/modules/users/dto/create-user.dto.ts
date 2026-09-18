@@ -5,11 +5,16 @@ import {
   Matches,
   IsNotEmpty,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
   /**
    * User email (unique)
    */
+  @ApiProperty({
+    description: 'User email (unique)',
+    example: 'alumno@est.umss.edu',
+  })
   @IsEmail()
   @IsNotEmpty()
   email: string;
@@ -17,6 +22,7 @@ export class CreateUserDto {
   /**
    * User first name
    */
+  @ApiProperty({ description: 'First name', example: 'Ana' })
   @IsString()
   @IsNotEmpty()
   firstName: string;
@@ -24,6 +30,7 @@ export class CreateUserDto {
   /**
    * User last name
    */
+  @ApiProperty({ description: 'Last name', example: 'Pérez' })
   @IsString()
   @IsNotEmpty()
   lastName: string;
@@ -31,6 +38,11 @@ export class CreateUserDto {
   /**
    * User password (must meet security requirements)
    */
+  @ApiProperty({
+    description:
+      'Password. Minimum 8 characters with at least one uppercase letter, one lowercase letter, one digit, and one special character.',
+    example: 'Passw0rd!x',
+  })
   @IsString()
   @IsNotEmpty()
   @MinLength(8, {
