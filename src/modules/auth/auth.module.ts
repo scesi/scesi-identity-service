@@ -10,6 +10,9 @@ import { RefreshTokenService } from './services/refresh-token.service';
 import { AuthService } from './services/auth.service';
 import { JwtStrategy } from './services/jwt.strategy';
 import { AuthController } from './auth.controller';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RolesGuard } from './guards/roles.guard';
+import { PermissionsGuard } from './guards/permissions.guard';
 import { UsersModule } from '../users/users.module';
 import { AuthRolesModule } from '../auth-roles/auth-roles.module';
 import { PermissionsModule } from '../permissions/permissions.module';
@@ -52,7 +55,18 @@ import { PermissionsModule } from '../permissions/permissions.module';
     RefreshTokenService,
     AuthService,
     JwtStrategy,
+    JwtAuthGuard,
+    RolesGuard,
+    PermissionsGuard,
   ],
-  exports: [PasswordHashingService, AuthService, JwtModule, JwtStrategy],
+  exports: [
+    PasswordHashingService,
+    AuthService,
+    JwtModule,
+    JwtStrategy,
+    JwtAuthGuard,
+    RolesGuard,
+    PermissionsGuard,
+  ],
 })
 export class AuthModule {}
